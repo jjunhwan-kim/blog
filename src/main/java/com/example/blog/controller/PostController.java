@@ -21,7 +21,7 @@ public class PostController {
     // Http Method
     // GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD, TRACE, CONNECT
     // 글 등록
-    @PostMapping("/posts")
+    //@PostMapping("/posts")
     //public String post(@RequestParam String title, @RequestParam String content) {
     //public String post(@RequestParam Map<String, String> params) {
     //public String post(PostCreate params) {
@@ -40,6 +40,12 @@ public class PostController {
         }
 
         log.info("params={}", params);
+        return Map.of();
+    }
+
+    @PostMapping("/posts")
+    public Map<String, String> post(@RequestBody @Valid PostCreate params) {
+
         return Map.of();
     }
 }
