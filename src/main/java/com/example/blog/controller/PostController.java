@@ -48,10 +48,12 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate request) {
+    public void post(@RequestBody @Valid PostCreate request) {
         // repository.save(params) // 가능하면 서비스 레이어를 만들어서 호출하자
-
+        // Case1. 저장한 데이터 Entity -> response로 응답하기
+        // Case2. 저장한 데이터의 Primary ID -> response로 응답하기
+        //        Client에서는 수신한 id를 글 조회 API를 통해서 데이터를 수신받음
+        // Case3. 응답 필요 없음 -> 클라이언트에서 모든 Post(글) 데이터 context를 관리함
         postService.write(request);
-        return Map.of();
     }
 }

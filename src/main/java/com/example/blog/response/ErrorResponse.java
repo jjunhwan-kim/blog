@@ -1,12 +1,11 @@
 package com.example.blog.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * {
@@ -18,11 +17,16 @@ import java.util.Map;
  * }
  */
 @Getter
-@RequiredArgsConstructor
 public class ErrorResponse {
     private final String code;
     private final String message;
     private final List<ValidationTuple> validation = new ArrayList<>();
+
+    @Builder
+    public ErrorResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 
     public void addValidation(String fieldName, String errorMessage) {
         ValidationTuple tuple = new ValidationTuple(fieldName, errorMessage);

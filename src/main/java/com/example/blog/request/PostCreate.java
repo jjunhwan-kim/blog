@@ -1,15 +1,23 @@
 package com.example.blog.request;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+@ToString
+@Setter
+@Getter
 public class PostCreate {
 
     @NotBlank(message = "타이틀을 입력해주세요.")
-    public String title;
+    private String title;
 
     @NotBlank(message = "컨텐츠를 입력해주세요.")
-    public String content;
+    private String content;
+
+    @Builder
+    public PostCreate(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

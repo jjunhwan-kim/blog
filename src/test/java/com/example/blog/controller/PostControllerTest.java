@@ -2,6 +2,8 @@ package com.example.blog.controller;
 
 import com.example.blog.domain.Post;
 import com.example.blog.repository.PostRepository;
+import com.example.blog.request.PostCreate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,6 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 class PostControllerTest {
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     MockMvc mockMvc;
@@ -38,14 +43,24 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 Hello World를 출력한다.")
     void test() throws Exception {
 
+        // given
+        PostCreate request = PostCreate.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
+        System.out.println(json);
+
         // application/x-www-form-urlencoded
         // application/json
 
         mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목입니다.\", \"content\": \"내용입니다.\" }"))
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{}"))
+                .andExpect(content().string(""))
                 .andDo(print());
 
         /*
@@ -69,11 +84,15 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 title값은 필수다.")
     void test2() throws Exception {
 
+        PostCreate request = PostCreate.builder()
+                .title(null)
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
         mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"title\": \"\", \"content\": \"내용입니다.\" }"))
-//                        .content("{\"title\": null, \"content\": \"내용입니다.\" }"))
-                        .content("{\"title\": null, \"content\": \"\" }"))
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isBadRequest())
                 //.andExpect(jsonPath("$.title").value("타이틀을 입력해주세요."))
                 .andExpect(jsonPath("$.code").value("400"))
@@ -89,11 +108,17 @@ class PostControllerTest {
     void test3() throws Exception {
 
         // given
+        PostCreate request = PostCreate.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
 
         // when
         mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목입니다.\", \"content\": \"내용입니다.\" }"))
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isOk())
                 .andDo(print());
 
@@ -101,7 +126,7 @@ class PostControllerTest {
         assertEquals(1L, postRepository.count());
         List<Post> posts = postRepository.findAll();
         Post post = posts.get(0);
-        assertEquals("제목입니다.", post.getTitle());
-        assertEquals("내용입니다.", post.getContent());
+        assertEquals(request.getTitle(), post.getTitle());
+        assertEquals(request.getContent(), post.getContent());
     }
 }
