@@ -1,14 +1,13 @@
 package com.example.blog.controller;
 
+import com.example.blog.domain.Post;
 import com.example.blog.request.PostCreate;
 import com.example.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -56,4 +55,10 @@ public class PostController {
         // Case3. 응답 필요 없음 -> 클라이언트에서 모든 Post(글) 데이터 context를 관리함
         postService.write(request);
     }
+
+    @GetMapping("/posts/{id}")
+    public Post get(@PathVariable Long id) {
+        return postService.get(id);
+    }
+
 }
