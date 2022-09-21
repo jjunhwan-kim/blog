@@ -4,7 +4,6 @@ import com.example.blog.domain.Post;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.request.PostCreate;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -98,8 +99,8 @@ class PostControllerTest {
                 //.andExpect(jsonPath("$.title").value("타이틀을 입력해주세요."))
                 .andExpect(jsonPath("$.code").value("400"))
                 .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
-                .andExpect(jsonPath("$.validation[*].fieldName").value(Matchers.containsInAnyOrder("title", "content")))
-                .andExpect(jsonPath("$.validation[*].errorMessage").value(Matchers.containsInAnyOrder("타이틀을 입력해주세요.", "컨텐츠를 입력해주세요.")))
+                .andExpect(jsonPath("$.validation[*].fieldName").value(containsInAnyOrder("title", "content")))
+                .andExpect(jsonPath("$.validation[*].errorMessage").value(containsInAnyOrder("타이틀을 입력해주세요.", "컨텐츠를 입력해주세요.")))
 //                .andExpect(jsonPath("$.validation.content").value("컨텐츠를 입력해주세요."))
                 .andDo(print());
     }
@@ -148,6 +149,35 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.id").value(post.getId()))
                 .andExpect(jsonPath("$.title").value("1234567890"))
                 .andExpect(jsonPath("$.content").value(post.getContent()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test5() throws Exception {
+        // given
+
+        Post post1 = postRepository.save(Post.builder()
+                .title("title1")
+                .content("content1")
+                .build());
+
+        Post post2 = postRepository.save(Post.builder()
+                .title("title2")
+                .content("content2")
+                .build());
+
+        // when & then
+        mockMvc.perform(get("/posts/")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$[0].id").value(post1.getId()))
+                .andExpect(jsonPath("$[0].title").value(post1.getTitle()))
+                .andExpect(jsonPath("$[0].content").value(post1.getContent()))
+                .andExpect(jsonPath("$[1].id").value(post2.getId()))
+                .andExpect(jsonPath("$[1].title").value(post2.getTitle()))
+                .andExpect(jsonPath("$[1].content").value(post2.getContent()))
                 .andDo(print());
     }
 }

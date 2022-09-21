@@ -1,6 +1,5 @@
 package com.example.blog.controller;
 
-import com.example.blog.domain.Post;
 import com.example.blog.request.PostCreate;
 import com.example.blog.response.PostResponse;
 import com.example.blog.service.PostService;
@@ -60,6 +59,11 @@ public class PostController {
     @GetMapping("/posts/{id}")
     public PostResponse get(@PathVariable Long id) {
         return postService.get(id);
+    }
+
+    @GetMapping("/posts")
+    public List<PostResponse> getLists() {
+        return postService.getList();
     }
 
 }

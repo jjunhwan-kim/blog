@@ -73,4 +73,27 @@ class PostServiceTest {
         assertEquals(requestPost.getTitle(), postResponse.getTitle());
         assertEquals(requestPost.getContent(), postResponse.getContent());
     }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test3() {
+
+        // given
+        postRepository.saveAll(List.of(
+                Post.builder()
+                        .title("foo1")
+                        .content("bar1")
+                        .build(),
+                Post.builder()
+                        .title("foo2")
+                        .content("bar2")
+                        .build())
+        );
+
+        // when
+        List<PostResponse> posts = postService.getList();
+
+        // then
+        assertEquals(2L, posts.size());
+    }
 }
