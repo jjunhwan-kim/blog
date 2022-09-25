@@ -5,6 +5,7 @@ import com.example.blog.response.PostResponse;
 import com.example.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -62,8 +63,8 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getLists() {
-        return postService.getList();
+    public List<PostResponse> getLists(Pageable pageable) {
+        return postService.getList(pageable);
     }
 
 }
