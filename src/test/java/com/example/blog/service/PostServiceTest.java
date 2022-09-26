@@ -3,6 +3,7 @@ package com.example.blog.service;
 import com.example.blog.domain.Post;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.request.PostCreate;
+import com.example.blog.request.PostSearch;
 import com.example.blog.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,11 +92,17 @@ class PostServiceTest {
         postRepository.saveAll(requestPosts);
 
         // when
-        List<PostResponse> posts = postService.getList(
-                PageRequest.of(0, 5, Sort.Direction.DESC, "id"));
+//        List<PostResponse> posts = postService.getList(
+//                PageRequest.of(0, 5, Sort.Direction.DESC, "id"));
+
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .build();
+
+        List<PostResponse> posts = postService.getList(postSearch);
 
         // then
-        assertEquals(5L, posts.size());
+        assertEquals(10L, posts.size());
         assertEquals("호돌맨 제목 30", posts.get(0).getTitle());
         assertEquals("호돌맨 제목 26", posts.get(4).getTitle());
     }
