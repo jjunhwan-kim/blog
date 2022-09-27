@@ -1,8 +1,10 @@
 package com.example.blog.service;
 
 import com.example.blog.domain.Post;
+import com.example.blog.domain.PostEditor;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.request.PostCreate;
+import com.example.blog.request.PostEdit;
 import com.example.blog.request.PostSearch;
 import com.example.blog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +59,29 @@ public class PostService {
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        PostEditor.PostEditorBuilder postEditorBuilder = post.toEditor();
+
+        /*
+        if (postEdit.getTitle() != null) {
+            postEditorBuilder.title(postEdit.getTitle());
+        }
+
+        if (postEdit.getContent() != null) {
+            postEditorBuilder.content(postEdit.getContent());
+        }
+        post.edit(postEditorBuilder.build());
+        */
+
+
+        PostEditor postEditor = postEditorBuilder.title(postEdit.getTitle())
+                .content(postEdit.getContent())
+                .build();
+        post.edit(postEditorBuilder.build());
     }
 }

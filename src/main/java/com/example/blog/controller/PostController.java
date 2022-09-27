@@ -1,6 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.request.PostCreate;
+import com.example.blog.request.PostEdit;
 import com.example.blog.request.PostSearch;
 import com.example.blog.response.PostResponse;
 import com.example.blog.service.PostService;
@@ -65,6 +66,11 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponse> getLists(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{id}")
+    public void edit(@PathVariable Long id, @RequestBody @Valid PostEdit request) {
+        postService.edit(id, request);
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.blog.service;
 import com.example.blog.domain.Post;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.request.PostCreate;
+import com.example.blog.request.PostEdit;
 import com.example.blog.request.PostSearch;
 import com.example.blog.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
@@ -105,5 +106,59 @@ class PostServiceTest {
         assertEquals(10L, posts.size());
         assertEquals("호돌맨 제목 30", posts.get(0).getTitle());
         assertEquals("호돌맨 제목 26", posts.get(4).getTitle());
+    }
+
+    @Test
+    @DisplayName("글 제목 수정")
+    void test4() {
+        // given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+
+        postRepository.save(post);
+
+        // when
+        PostEdit postEdit = PostEdit.builder()
+                .title("호돌걸")
+                .content("반포자이")
+                .build();
+
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+
+        assertEquals("호돌걸", changedPost.getTitle());
+        assertEquals("반포자이", changedPost.getContent());
+    }
+
+    @Test
+    @DisplayName("글 내용 수정")
+    void test5() {
+        // given
+        Post post = Post.builder()
+                .title("호돌맨")
+                .content("반포자이")
+                .build();
+
+        postRepository.save(post);
+
+        // when
+        PostEdit postEdit = PostEdit.builder()
+                .title("호돌맨")
+                .content("초가집")
+                .build();
+
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+
+        assertEquals("호돌맨", changedPost.getTitle());
+        assertEquals("초가집", changedPost.getContent());
     }
 }
