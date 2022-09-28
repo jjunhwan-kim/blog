@@ -34,4 +34,9 @@ public class Post {
         title = postEditor.getTitle();
         content = postEditor.getContent();
     }
+
+    public void edit(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

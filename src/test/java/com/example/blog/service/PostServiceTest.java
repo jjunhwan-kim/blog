@@ -122,7 +122,7 @@ class PostServiceTest {
         // when
         PostEdit postEdit = PostEdit.builder()
                 .title("호돌걸")
-                .content("반포자이")
+                .content(null)
                 .build();
 
         postService.edit(post.getId(), postEdit);
@@ -148,7 +148,7 @@ class PostServiceTest {
 
         // when
         PostEdit postEdit = PostEdit.builder()
-                .title("호돌맨")
+                .title(null)
                 .content("초가집")
                 .build();
 
