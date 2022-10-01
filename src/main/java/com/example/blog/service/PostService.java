@@ -2,6 +2,7 @@ package com.example.blog.service;
 
 import com.example.blog.domain.Post;
 import com.example.blog.domain.PostEditor;
+import com.example.blog.exception.PostNotFound;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.request.PostCreate;
 import com.example.blog.request.PostEdit;
@@ -36,7 +37,7 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         /**
          *  PostController -> WebPostService -> Repository
@@ -63,7 +64,7 @@ public class PostService {
 
     public void edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         //post.edit(postEdit.getTitle(), postEdit.getContent());
 
@@ -77,7 +78,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
         postRepository.delete(post);
     }
 }
