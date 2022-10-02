@@ -1,13 +1,17 @@
 package com.example.blog.controller;
 
+import com.example.blog.exception.HodologException;
 import com.example.blog.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -38,5 +42,24 @@ public class ExceptionController {
         }
 
         return response;
+    }
+
+    //@ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(HodologException.class)
+    public ResponseEntity<ErrorResponse> hodologException(HodologException e) {
+
+        int statusCode = e.getStatusCode();
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .build();
+
+        for (Map.Entry<String, String> entry : e.getValidation().entrySet()) {
+            errorResponse.addValidation(entry.getKey(), entry.getValue());
+        }
+
+        return ResponseEntity.status(statusCode)
+                .body(errorResponse);
     }
 }
